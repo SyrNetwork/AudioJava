@@ -1,0 +1,313 @@
+package frame;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream; //
+import javax.sound.sampled.AudioSystem; //доступ к аудиосистеме
+import javax.sound.sampled.DataLine; 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.TargetDataLine;
+import javax.swing.JOptionPane;
+
+public class NewJFrame extends javax.swing.JFrame {
+
+   ServerSocket MyService;
+   Socket clientSocket = null;
+   BufferedInputStream input;
+   TargetDataLine targetDataLine;
+   
+   BufferedOutputStream out;
+   ByteArrayOutputStream byteArrayOutputStream;
+   AudioFormat AudioFormat;
+   
+   SourceDataLine sourceDataLine;
+   byte tempBuffer[] = new byte[1000];
+   boolean stopCapture = false;
+
+BufferedInputStream in = null;
+Socket sock = null;
+    private AudioFormat audioFormat;
+
+    
+    public NewJFrame() {
+        initComponents();
+    }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jButton1 = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jButton1.setForeground(new java.awt.Color(255, 0, 255));
+        jButton1.setText("Подключение");
+        jButton1.setToolTipText("");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jTextField2.setForeground(new java.awt.Color(255, 0, 153));
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+        jTextField2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jTextField2PropertyChange(evt);
+            }
+        });
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jLabel1.setText("Введите порт сервера");
+
+        jLabel2.setText("Вывод дополнительной информации");
+
+        jMenu1.setText("О Программе");
+
+        jMenuItem1.setText("О Разработчиках");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1)))
+                        .addContainerGap(109, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField2)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                .addGap(78, 78, 78)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+jTextArea1.append("Trying to connect...");//добавление
+try{
+    mysender();
+jTextArea1.append ("Connections success");
+jButton1.setEnabled(false);
+}
+catch (LineUnavailableException lue){
+    jTextArea1.append ("line Unavailable"+lue);
+}
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+       jButton1.setEnabled(true);
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    
+    
+    private void jTextField2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTextField2PropertyChange
+         jButton1.setEnabled(true);
+    }//GEN-LAST:event_jTextField2PropertyChange
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+                JOptionPane.showMessageDialog(null,"Яковлев Сергей"); 
+                    // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+public void mysender() throws
+        LineUnavailableException{//// Недоступность линии 
+           try {
+        AudioFormat=getAudioFormat();//Получает формат аудиоданных, содержавшихся в аудиофайле.
+        DataLine.Info 
+                dataLineinfo = new DataLine.Info(SourceDataLine.class,AudioFormat);////обеспечивает дополнительную информацию, определенную для строк данных.
+        sourceDataLine = (SourceDataLine) AudioSystem.getLine(dataLineinfo);//добавляет связанная с носителями функциональность к ее интерфейсу
+        sourceDataLine.open(AudioFormat);// открывает строку с форматом 
+        sourceDataLine.start();//начинает запись в строку
+        //соурс дата лэйн записывает
+        //таргет дата лейн считывает
+            String[] ipport = jTextField2.getText().split(":");//массив символьный
+        int port = Integer.parseInt(ipport[1]);//целое число
+        sock = new Socket(ipport[0],port);//создает сокет (айпи и порт)
+                
+                input = new BufferedInputStream(clientSocket.getInputStream());
+                out = new BufferedOutputStream(clientSocket.getOutputStream());
+                while (input.read(tempBuffer)!=-1) // заполняет массив
+                    sourceDataLine.write(tempBuffer, 0 , 10000);
+                
+               
+    }
+    catch(IOException e)
+    {
+        jTextArea1.append("IOException "+e);
+    }
+}   
+
+class CaptureThread extends Thread{
+    byte tempBuffer[] = new byte [1000];
+        @Override
+    public void run() {
+        byteArrayOutputStream = new ByteArrayOutputStream();//реализует поток вывода в котором данные пишутся в байтовый массив
+        stopCapture = false;//остановка захвата
+        try{
+            while(!stopCapture){
+                int cnt = targetDataLine.read(tempBuffer, 0, tempBuffer.length);////массив из тысячи байтов
+                out.write(tempBuffer);//вывод
+                if(cnt > 0)
+                    byteArrayOutputStream.write(tempBuffer,0 ,cnt);//
+            }byteArrayOutputStream.close();
+        }catch(IOException e){
+            jTextArea1.append("Exception\n"+e);
+        }
+    }
+}  
+
+private void captureAudio(){
+    try{
+        String[] ipport = jTextField2.getText().split(":");//массив символьный
+        int port = Integer.parseInt(ipport[1]);//целое число
+        sock = new Socket(ipport[0],port);//создает сокет (айпи и порт)
+        out = new BufferedOutputStream(sock.getOutputStream());
+        in = new BufferedInputStream(sock.getInputStream());
+        Mixer.Info[] mixerinfo = AudioSystem.getMixerInfo();//Получает информацию об этом микшере, включая имя продукта, версию, поставщика
+        jTextArea1.append("Available mixers:\n");
+        for (int cnt =0; cnt < mixerinfo.length; cnt++)//информация об одном микшере, ресурсы я так понимаю
+        jTextArea1.append(mixerinfo[cnt].getName() + "\n");//ввод имени
+        audioFormat = getAudioFormat();//Получает формат аудиоданных, содержавшихся в аудиофайле.ФУНКЦИЯ
+        DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
+        Mixer mixer = AudioSystem.getMixer(mixerinfo[3]);
+        targetDataLine = (TargetDataLine)mixer.getLine(dataLineInfo);////Целевая строка данных является типом DataLine из которого могут быть считаны аудиоданные
+        targetDataLine.open(audioFormat);//Открывает строку с указанным форматом, заставляя строку получить любые необходимые системные ресурсы и стать операционным.
+        targetDataLine.start();//Позволяет строке участвовать во вводе-выводе данных
+        Thread captureThread = new CaptureThread();//создает ниже
+        captureThread.start();
+        DataLine.Info dataLineInfo1 = new DataLine.Info(SourceDataLine.class, audioFormat);//обеспечивает дополнительную информацию, определенную для строк данных. Эта информация включает: 
+//•аудиоформаты, поддерживаемые по условию строка 
+//•минимальные и максимальные размеры его внутреннего буфера 
+
+        sourceDataLine = (SourceDataLine)//Строка исходных данных является строкой данных, которой могут быть записаны данные
+                AudioSystem.getLine(dataLineInfo1);
+        sourceDataLine.open(audioFormat);//Открывает строку с указанным форматом, заставляя строку получить любые необходимые системные ресурсы и стать операционным
+        sourceDataLine.start();   //Позволяет строке участвовать во вводе-выводе данных
+    }catch(NumberFormatException | IOException | LineUnavailableException e){
+        jTextArea1.append("Host not found!\n"+e);////добавление
+    }
+    
+}
+    private AudioFormat getAudioFormat(){
+    float sampleRate = 8000.0f;
+    int sampleSizeInBits = 8;
+    int channels = 1;
+    boolean signed = true;
+    boolean bigEndian = false;
+    return new AudioFormat(
+            sampleRate,
+            sampleSizeInBits,
+            channels,
+            signed,
+            bigEndian);
+}
+
+
+
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new NewJFrame().setVisible(true); //Аллаху акбар, работай
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField2;
+    // End of variables declaration//GEN-END:variables
+}
